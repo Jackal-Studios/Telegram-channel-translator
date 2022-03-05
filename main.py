@@ -30,7 +30,11 @@ print(datetimestr)
 
 
 # client.send_message(-707770260,msgtext+"\n"+str(datetimestr))
-client.send_message(forward_chat,msgtext+"\n\n# Translated #\n\n"+translate(msgtext)+"\n\n"+str(datetimestr))
+if(msg[0].media):
+    client.send_file(forward_chat,msg[0].media, caption = msgtext+"\n\n# Translated #\n\n"+translate(msgtext)+"\n\n"+str(datetimestr))
+    #msg[0].media, caption = "hello"
+else:
+    client.send_message(forward_chat,msgtext+"\n\n# Translated #\n\n"+translate(msgtext)+"\n\n"+str(datetimestr))
 
 try:
     print('(Press Ctrl+C to stop this)')

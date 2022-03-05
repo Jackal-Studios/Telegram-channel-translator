@@ -1,6 +1,7 @@
 import asyncio
 from telethon.sync import TelegramClient, events , utils
 from google_trans_new import google_translator
+import time
 translator = google_translator()
 api_id = int(open('./secrets/api_id.txt','r+').readline().strip().replace("\n",""))
 api_hash = open('./secrets/api_hash.txt','r+').readline().strip().replace("\n","")
@@ -18,26 +19,42 @@ def translate(text,lang='en'):
 
 
 
-msg=client.get_messages(channel_name, 1)
-print(msg)
-print(msg[0])
-msgtext=msg[0].message
-print(msgtext)
-msgid=msg[0].id
-print(msgid)
-datetimestr=msg[0].date
-print(datetimestr)
+# msg=client.get_messages(channel_name, 1)
+# print(msg)
+# print(msg[0])
+# msgtext=msg[0].message
+# print(msgtext)
+# msgid=msg[0].id
+# print(msgid)
+# datetimestr=msg[0].date
+# print(datetimestr)
+#
+#
+# # client.send_message(-707770260,msgtext+"\n"+str(datetimestr))
+# if(msg[0].media):
+#     client.send_file(forward_chat,msg[0].media, caption = msgtext+"\n\n# Translated #\n\n"+translate(msgtext)+"\n\n"+str(datetimestr))
+#     #msg[0].media, caption = "hello"
+# else:
+#     client.send_message(forward_chat,msgtext+"\n\n# Translated #\n\n"+translate(msgtext)+"\n\n"+str(datetimestr))
 
+while(True):
+    msg = client.get_messages(channel_name, 1)
+    msgtext = msg[0].message
+    msgid = msg[0].id
+    datetimestr = msg[0].date
+    if(msgid!=last_id_processed):
+        last_id_processed=msgid
+        if (msg[0].media):
+            client.send_file(forward_chat, msg[0].media,
+                             caption=msgtext + "\n\n# Translated #\n\n" + translate(msgtext) + "\n\n" + str(
+                                 datetimestr))
+        else:
+            client.send_message(forward_chat,
+                                msgtext + "\n\n# Translated #\n\n" + translate(msgtext) + "\n\n" + str(datetimestr))
 
-# client.send_message(-707770260,msgtext+"\n"+str(datetimestr))
-if(msg[0].media):
-    client.send_file(forward_chat,msg[0].media, caption = msgtext+"\n\n# Translated #\n\n"+translate(msgtext)+"\n\n"+str(datetimestr))
-    #msg[0].media, caption = "hello"
-else:
-    client.send_message(forward_chat,msgtext+"\n\n# Translated #\n\n"+translate(msgtext)+"\n\n"+str(datetimestr))
-
-try:
-    print('(Press Ctrl+C to stop this)')
-    client.run_until_disconnected()
-finally:
-    client.disconnect()
+    time.sleep(0.01)
+# try:
+#     print('(Press Ctrl+C to stop this)')
+#     client.run_until_disconnected()
+# finally:
+#     client.disconnect()
